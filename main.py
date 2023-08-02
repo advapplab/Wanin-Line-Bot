@@ -281,7 +281,7 @@ def get_relevant_answer_from_faq(user_question):
       "sentences": all_questions
     },
   })
-  # print(f"Query Results2: {str(similarity_list)}")
+  print(f"Query Results2: {str(similarity_list)}")
 
   if max(similarity_list) > 0.6:
     index_of_largest = max(range(len(similarity_list)), key=lambda i: similarity_list[i])
