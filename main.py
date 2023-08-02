@@ -274,7 +274,7 @@ def get_relevant_answer_from_faq(user_question):
 
     output = hf_sbert_query({
       "inputs": {
-        "source_sentence": "That is a happy person",
+        "source_sentence": user_question,
         "sentences": all_questions
       },
     })
