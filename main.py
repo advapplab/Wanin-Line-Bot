@@ -284,7 +284,7 @@ def get_relevant_answer_from_faq(user_question):
 
       # Query the MongoDB collection for the corresponding answer to the most similar question
       answer = collection.find_one({"question": all_questions[index_of_largest]})
-      print(f"Query Results4: {str(answer)}")
+      print(f"Query Results4: {str(answer['answer'])}")
 
       return answer
     # add by owen, end
