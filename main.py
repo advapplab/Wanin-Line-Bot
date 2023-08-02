@@ -297,7 +297,7 @@ def get_relevant_answer_from_faq(user_question):
         "sentences": all_questions
       },
     })
-    # print(f"Similarity Results: {str(similarity_list)}")
+    print(f"Similarity Results: {str(similarity_list)}")
     # print(f"Max similarity: {str(max(similarity_list))}")
     # print(f"Max similarity if: {str(max(similarity_list) > 0.6)}")
 
