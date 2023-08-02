@@ -110,12 +110,15 @@ def handle_text_message(event):
 
   try:
 
+    # add by owen, 20230802, fix the token requirement issue
     model = OpenAIModel(api_key=api_key)
     is_successful, _, _ = model.check_token_valid()
     if not is_successful:
       raise ValueError('Invalid API token')
     model_management[user_id] = model
+    # TODO: be sure not duplicated in db.json
     storage.save({user_id: api_key})
+    # add end
 
 
     if text.startswith('/註冊'):
