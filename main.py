@@ -305,7 +305,7 @@ def get_relevant_answer_from_faq(user_question):
     return None
   except Exception as e:
     # traceback.print_exc()
-    print(f"Error while querying MongoDB: {str(e)}")
+    print(f"Error while querying MongoDB: {str(traceback.print_exc())}")
     return None
 
 
