@@ -248,7 +248,7 @@ def get_relevant_answer_from_faq(user_question):
     ]
     # logger.info(f'{user_id}: {output}')
 
-    print(f"Query Results: {str(all_questions)}")
+    print(f"Query Results1: {str(all_questions)}")
 
     # comment by owen, 20230802
     # # Encode the user question using SBERT
@@ -278,7 +278,7 @@ def get_relevant_answer_from_faq(user_question):
         "sentences": all_questions
       },
     })
-    print(f"Query Results: {str(output)}")
+    print(f"Query Results2: {str(output)}")
 
 
 
