@@ -154,49 +154,55 @@ def handle_text_message(event):
 
       # Find the most relevant FAQ answer based on text similarity
       relevant_answer = get_relevant_answer_from_faq(text)
+      relevant_answer = '(FAQ資料庫)' + relevant_answer
 
       if relevant_answer:
         msg = TextSendMessage(text=relevant_answer)
         memory.append(user_id, 'assistant', relevant_answer)
         response = relevant_answer
       else:
-        url = website.get_url_from_text(text)
-        if url:
-          if youtube.retrieve_video_id(text):
-            is_successful, chunks, error_message = youtube.get_transcript_chunks(
-              youtube.retrieve_video_id(text))
-            if not is_successful:
-              raise Exception(error_message)
-            youtube_transcript_reader = YoutubeTranscriptReader(
-              user_model, os.getenv('OPENAI_MODEL_ENGINE'))
-            is_successful, response, error_message = youtube_transcript_reader.summarize(
-              chunks)
-            if not is_successful:
-              raise Exception(error_message)
-            role, response = get_role_and_content(response)
-            msg = TextSendMessage(text=response)
-          else:
-            chunks = website.get_content_from_url(url)
-            if len(chunks) == 0:
-              raise Exception('無法撈取此網站文字')
-            website_reader = WebsiteReader(user_model,
-                                           os.getenv('OPENAI_MODEL_ENGINE'))
-            is_successful, response, error_message = website_reader.summarize(
-              chunks)
-            if not is_successful:
-              raise Exception(error_message)
-            role, response = get_role_and_content(response)
-            msg = TextSendMessage(text=response)
-            memory.append(user_id, role, response)
-        else:
-          is_successful, response, error_message = user_model.chat_completions(
-            memory.get(user_id), os.getenv('OPENAI_MODEL_ENGINE'))
-          if not is_successful:
-            raise Exception(error_message)
-          # Get role and content from the response
-          role, response = get_role_and_content(response)
-          msg = TextSendMessage(text=response)
-          memory.append(user_id, role, response)
+        msg = TextSendMessage(text='找不到答案，研究團隊下階段解決')
+        memory.append(user_id, 'assistant', relevant_answer)
+        response = relevant_answer
+
+      # else:
+      #   url = website.get_url_from_text(text)
+      #   if url:
+      #     if youtube.retrieve_video_id(text):
+      #       is_successful, chunks, error_message = youtube.get_transcript_chunks(
+      #         youtube.retrieve_video_id(text))
+      #       if not is_successful:
+      #         raise Exception(error_message)
+      #       youtube_transcript_reader = YoutubeTranscriptReader(
+      #         user_model, os.getenv('OPENAI_MODEL_ENGINE'))
+      #       is_successful, response, error_message = youtube_transcript_reader.summarize(
+      #         chunks)
+      #       if not is_successful:
+      #         raise Exception(error_message)
+      #       role, response = get_role_and_content(response)
+      #       msg = TextSendMessage(text=response)
+      #     else:
+      #       chunks = website.get_content_from_url(url)
+      #       if len(chunks) == 0:
+      #         raise Exception('無法撈取此網站文字')
+      #       website_reader = WebsiteReader(user_model,
+      #                                      os.getenv('OPENAI_MODEL_ENGINE'))
+      #       is_successful, response, error_message = website_reader.summarize(
+      #         chunks)
+      #       if not is_successful:
+      #         raise Exception(error_message)
+      #       role, response = get_role_and_content(response)
+      #       msg = TextSendMessage(text=response)
+      #       memory.append(user_id, role, response)
+      #   else:
+      #     is_successful, response, error_message = user_model.chat_completions(
+      #       memory.get(user_id), os.getenv('OPENAI_MODEL_ENGINE'))
+      #     if not is_successful:
+      #       raise Exception(error_message)
+      #     # Get role and content from the response
+      #     role, response = get_role_and_content(response)
+      #     msg = TextSendMessage(text=response)
+      #     memory.append(user_id, role, response)
 
       # Calculate the response time
       response_timestamp = datetime.now()
@@ -233,7 +239,6 @@ def hf_sbert_query(payload):
 
 
 # connect to mongodb FAQ
-###
 def get_relevant_answer_from_faq(user_question):
   try:
     client = MongoClient('mongodb+srv://'+mdb_user+':'+mdb_pass+'@'+mdb_host)
