@@ -16,19 +16,11 @@ from src.utils import get_role_and_content
 from src.service.youtube import Youtube, YoutubeTranscriptReader
 from src.service.website import Website, WebsiteReader
 from src.mongodb import mongodb
-<<<<<<< HEAD
-###
-from datetime import datetime
-from pymongo.errors import ConnectionFailure
-from pymongo import MongoClient
-from sentence_transformers import SentenceTransformer, util
-=======
 ###
 from datetime import datetime
 from pymongo.errors import ConnectionFailure
 from pymongo import MongoClient
 # from sentence_transformers import SentenceTransformer, util
->>>>>>> b0c13535cc3aa4b6aeced1b4bf0dd2435651e8ed
 
 load_dotenv('.env')
 
@@ -56,47 +48,6 @@ import os
 
 my_secret = os.environ['OPENAI_MODEL_ENGINE']
 
-<<<<<<< HEAD
-# Load SBERT model (you can use any SBERT model of your choice)
-sbert_model = SentenceTransformer(
-  'sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
-
-###
-
-
-# Function to save conversation data to MongoDB
-def save_conversation_to_mongodb(user_id, user_message, bot_response,
-                                 user_timestamp, response_timestamp,
-                                 response_time):
-  try:
-    client = MongoClient(
-      'mongodb+srv://wanin:kfNIv603ukunc62t@cluster0.2hzvoh7.mongodb.net/')
-    db = client['chatbot']
-    collection = db['history']
-
-    # Create a document to store the conversation data
-    conversation_data = {
-      'user_id': user_id,
-      'user_message': user_message,
-      'bot_response': bot_response,
-      'user_timestamp': user_timestamp,
-      'response_timestamp': response_timestamp,
-      'response_time': response_time,
-    }
-
-    # Insert the document into the collection
-    collection.insert_one(conversation_data)
-    client.close()
-  except ConnectionFailure:
-    print("Failed to connect to MongoDB. Conversation data not saved.")
-  except Exception as e:
-    print(f"Error while saving conversation data: {str(e)}")
-
-
-###
-
-
-=======
 # comment by owen 20230802
 # # Load SBERT model (you can use any SBERT model of your choice)
 # sbert_model = SentenceTransformer(
@@ -135,7 +86,6 @@ def save_conversation_to_mongodb(user_id, user_message, bot_response,
 
 
 
->>>>>>> b0c13535cc3aa4b6aeced1b4bf0dd2435651e8ed
 @app.route("/callback", methods=['POST'])
 def callback():
   signature = request.headers['X-Line-Signature']
@@ -254,81 +204,6 @@ def handle_text_message(event):
       response_timestamp = datetime.now()
       response_time = (response_timestamp - user_timestamp).total_seconds()
 
-<<<<<<< HEAD
-      # Save the conversation data to MongoDB
-      save_conversation_to_mongodb(user_id, user_message, response,
-                                   user_timestamp, response_timestamp,
-                                   response_time)
-
-  except ValueError:
-    msg = TextSendMessage(text='Token 無效，請重新註冊，格式為 /註冊 sk-xxxxx')
-  except KeyError:
-    msg = TextSendMessage(text='請先註冊 Token，格式為 /註冊 sk-xxxxx')
-  except Exception as e:
-    memory.remove(user_id)
-    if str(e).startswith('Incorrect API key provided'):
-      msg = TextSendMessage(text='OpenAI API Token 有誤，請重新註冊。')
-    elif str(e).startswith(
-        'That model is currently overloaded with other requests.'):
-      msg = TextSendMessage(text='已超過負荷，請稍後再試')
-    else:
-      msg = TextSendMessage(text=str(e))
-  line_bot_api.reply_message(event.reply_token, msg)
-
-
-# connect to mongodb FAQ
-###
-def get_relevant_answer_from_faq(user_question):
-  try:
-    client = MongoClient(
-      'mongodb+srv://wanin:kfNIv603ukunc62t@cluster0.2hzvoh7.mongodb.net/')
-    db = client['chatbot']
-    collection = db['faq']
-
-    # Get all questions from the MongoDB collection
-    all_questions = [
-      entry['question'] for entry in collection.find({}, {'question': 1})
-    ]
-
-    # Encode the user question using SBERT
-    user_question_embedding = sbert_model.encode([user_question])[0]
-
-    # Encode the FAQ questions using SBERT
-    faq_question_embeddings = sbert_model.encode(all_questions)
-
-    # Calculate the similarity between user question and FAQ questions using cosine similarity
-    similarities = util.pytorch_cos_sim(user_question_embedding,
-                                        faq_question_embeddings)[0]
-
-    # Find the index of the most similar question
-    most_similar_index = similarities.argmax()
-
-    # Check if the similarity is above a threshold (you can adjust this threshold as needed)
-    if similarities[most_similar_index] > 0.8:
-      # Query the MongoDB collection for the corresponding answer to the most similar question
-      result = collection.find_one(
-        {"question": all_questions[most_similar_index]})
-
-      # Return the corresponding answer if found
-      if result:
-        return result["answer"]
-      else:
-        return None
-    else:
-      return None
-
-  except ConnectionFailure:
-    print("Failed to connect to MongoDB. Unable to retrieve answer.")
-    return None
-  except Exception as e:
-    print(f"Error while querying MongoDB: {str(e)}")
-    return None
-
-
-###
-
-
-=======
       # Save the conversation data to MongoDB
       save_conversation_to_mongodb(user_id, user_message, response,
                                    user_timestamp, response_timestamp,
@@ -430,7 +305,6 @@ def get_relevant_answer_from_faq(user_question):
 ###
 
 
->>>>>>> b0c13535cc3aa4b6aeced1b4bf0dd2435651e8ed
 @handler.add(MessageEvent, message=AudioMessage)
 def handle_audio_message(event):
   user_id = event.source.user_id
