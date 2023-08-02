@@ -36,6 +36,7 @@ mdb_host = os.getenv('MONGODB_HOST')
 mdb_dbs = os.getenv('MONGODB_DATABASE')
 hf_token = os.getenv('HUGGINGFACE_TOKEN')
 hf_sbert_model = os.getenv('HUGGINGFACE_SBERT_MODEL')
+api_key = os.getenv('OPENAI_KEY')
 
 storage = None
 youtube = Youtube(step=4)
@@ -108,14 +109,21 @@ def handle_text_message(event):
   logger.info(f'{user_id}: {text}')
 
   try:
+
+    model = OpenAIModel(api_key=api_key)
+    is_successful, _, _ = model.check_token_valid()
+    if not is_successful:
+      raise ValueError('Invalid API token')
+
+
     if text.startswith('/註冊'):
-      api_key = text[3:].strip()
-      model = OpenAIModel(api_key=api_key)
-      is_successful, _, _ = model.check_token_valid()
-      if not is_successful:
-        raise ValueError('Invalid API token')
-      model_management[user_id] = model
-      storage.save({user_id: api_key})
+      # api_key = text[3:].strip()
+      # model = OpenAIModel(api_key=api_key)
+      # is_successful, _, _ = model.check_token_valid()
+      # if not is_successful:
+      #   raise ValueError('Invalid API token')
+      # model_management[user_id] = model
+      # storage.save({user_id: api_key})
       msg = TextSendMessage(text='Token 有效，註冊成功')
 
     elif text.startswith('/指令說明'):
