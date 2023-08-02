@@ -373,8 +373,6 @@ def get_relevant_answer_from_faq(user_question):
     ]
     # logger.info(f'{user_id}: {output}')
 
-    print(f"Query Results1: {str(all_questions)}")
-
     # comment by owen, 20230802
     # # Encode the user question using SBERT
     # user_question_embedding = sbert_model.encode([user_question])[0]
@@ -397,13 +395,21 @@ def get_relevant_answer_from_faq(user_question):
 
     # add by owen, 20230802, compare the similarity between user-input question and frequent questions, through HuggingFace API
 
-    output = hf_sbert_query({
+    similarity_list = hf_sbert_query({
       "inputs": {
         "source_sentence": user_question,
         "sentences": all_questions
       },
     })
-    print(f"Query Results2: {str(output)}")
+    print(f"Query Results2: {str(similarity_list)}")
+
+    if max(similarity_list) > 0.6:
+      index_of_largest = max(range(len(similarity_list)), key=lambda i: similarity_list[i])
+      print(f"Query Results3: {str(index_of_largest)}")
+
+      # Query the MongoDB collection for the corresponding answer to the most similar question
+      answer = collection.find_one({"question": all_questions[index_of_largest]})
+      print(f"Query Results4: {str(answer)}")
 
 
 
