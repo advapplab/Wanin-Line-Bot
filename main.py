@@ -226,6 +226,10 @@ def handle_text_message(event):
 
 # add by owen 20230802, query HF sbert API
 def hf_sbert_query(payload):
+
+  API_URL = "https://api-inference.huggingface.co/models/" + hf_sbert_model
+  headers = {"Authorization": "Bearer " + hf_token}
+
 	response = requests.post(API_URL, headers=headers, json=payload)
 	return response.json()
 
@@ -267,8 +271,6 @@ def get_relevant_answer_from_faq(user_question):
     #     {"question": all_questions[most_similar_index]})
 
     # add by owen, 20230802, compare the similarity between user-input question and frequent questions, through HuggingFace API
-    API_URL = "https://api-inference.huggingface.co/models/" + hf_sbert_model
-    headers = {"Authorization": "Bearer " + hf_token}
 
     output = hf_sbert_query({
       "inputs": {
