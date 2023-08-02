@@ -84,7 +84,6 @@ def save_conversation_to_mongodb(user_id, user_message, bot_response,
     print(f"Error while saving conversation data: {str(e)}")
 
 
-
 @app.route("/callback", methods=['POST'])
 def callback():
   signature = request.headers['X-Line-Signature']
@@ -249,47 +248,50 @@ def get_relevant_answer_from_faq(user_question):
     # logger.info(f'{user_id}: {output}')
 
     # comment by owen, 20230802
-    # # Encode the user question using SBERT
-    # user_question_embedding = sbert_model.encode([user_question])[0]
+    # Encode the user question using SBERT
+    user_question_embedding = sbert_model.encode([user_question])[0]
 
-    # # Encode the FAQ questions using SBERT
-    # faq_question_embeddings = sbert_model.encode(all_questions)
+    # Encode the FAQ questions using SBERT
+    faq_question_embeddings = sbert_model.encode(all_questions)
 
-    # # Calculate the similarity between user question and FAQ questions using cosine similarity
-    # similarities = util.pytorch_cos_sim(user_question_embedding,
-    #                                     faq_question_embeddings)[0]
+    # Calculate the similarity between user question and FAQ questions using cosine similarity
+    similarities = util.pytorch_cos_sim(user_question_embedding,
+                                        faq_question_embeddings)[0]
 
-    # # Find the index of the most similar question
-    # most_similar_index = similarities.argmax()
+    # Find the index of the most similar question
+    most_similar_index = similarities.argmax()
 
-    # # Check if the similarity is above a threshold (you can adjust this threshold as needed)
-    # if similarities[most_similar_index] > 0.8:
-    #   # Query the MongoDB collection for the corresponding answer to the most similar question
-    #   result = collection.find_one(
-    #     {"question": all_questions[most_similar_index]})
-
-    # add by owen, 20230802, compare the similarity between user-input question and frequent questions, through HuggingFace API
-    similarity_list = hf_sbert_query({
-      "inputs": {
-        "source_sentence": user_question,
-        "sentences": all_questions
-      },
-    })
-    # print(f"Query Results2: {str(similarity_list)}")
-
-    if max(similarity_list) > 0.6:
-      index_of_largest = max(range(len(similarity_list)), key=lambda i: similarity_list[i])
-      # print(f"Query Results3: {str(index_of_largest)}")
-
+    # Check if the similarity is above a threshold (you can adjust this threshold as needed)
+    if similarities[most_similar_index] > 0.8:
       # Query the MongoDB collection for the corresponding answer to the most similar question
-      answer = collection.find_one({"question": all_questions[index_of_largest]})
-      print(f"Query Results4: {str(answer)}")
-    # add by owen, end
+      result = collection.find_one(
+        {"question": all_questions[most_similar_index]})
+      print(f"Query Results4: {str(result)}")
+    return result
+    
 
-    if answer:
-      return answer
-    else:
-      return None
+    # # add by owen, 20230802, compare the similarity between user-input question and frequent questions, through HuggingFace API
+    # similarity_list = hf_sbert_query({
+    #   "inputs": {
+    #     "source_sentence": user_question,
+    #     "sentences": all_questions
+    #   },
+    # })
+    # # print(f"Query Results2: {str(similarity_list)}")
+
+    # if max(similarity_list) > 0.6:
+    #   index_of_largest = max(range(len(similarity_list)), key=lambda i: similarity_list[i])
+    #   # print(f"Query Results3: {str(index_of_largest)}")
+
+    #   # Query the MongoDB collection for the corresponding answer to the most similar question
+    #   answer = collection.find_one({"question": all_questions[index_of_largest]})
+    #   print(f"Query Results4: {str(answer)}")
+
+    #   return answer
+    # # add by owen, end
+
+    # else:
+    #   return None
 
   except ConnectionFailure:
     print("Failed to connect to MongoDB. Unable to retrieve answer.")
@@ -297,9 +299,6 @@ def get_relevant_answer_from_faq(user_question):
   except Exception as e:
     print(f"Error while querying MongoDB: {str(e)}")
     return None
-
-
-###
 
 
 @handler.add(MessageEvent, message=AudioMessage)
