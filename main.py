@@ -155,10 +155,10 @@ def handle_text_message(event):
 
       # Find the most relevant FAQ answer based on text similarity
       relevant_answer = get_relevant_answer_from_faq(text)
-      relevant_answer = '(FAQ資料庫)' + relevant_answer
       print(f"relevant_answer: {relevant_answer}")
 
       if relevant_answer:
+        relevant_answer = '(FAQ資料庫)' + relevant_answer
         msg = TextSendMessage(text=relevant_answer)
         memory.append(user_id, 'assistant', relevant_answer)
         response = relevant_answer
