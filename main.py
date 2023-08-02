@@ -156,6 +156,7 @@ def handle_text_message(event):
       # Find the most relevant FAQ answer based on text similarity
       relevant_answer = get_relevant_answer_from_faq(text)
       relevant_answer = '(FAQ資料庫)' + relevant_answer
+      print(f"relevant_answer: {relevant_answer}")
 
       if relevant_answer:
         msg = TextSendMessage(text=relevant_answer)
@@ -283,8 +284,8 @@ def get_relevant_answer_from_faq(user_question):
       },
     })
     # print(f"Similarity Results: {str(similarity_list)}")
-    print(f"Max similarity: {str(max(similarity_list))}")
-    print(f"Max similarity if: {str(max(similarity_list) > 0.6)}")
+    # print(f"Max similarity: {str(max(similarity_list))}")
+    # print(f"Max similarity if: {str(max(similarity_list) > 0.6)}")
 
     if max(similarity_list) > 0.6:
       index_of_largest = max(range(len(similarity_list)), key=lambda i: similarity_list[i])
@@ -292,7 +293,7 @@ def get_relevant_answer_from_faq(user_question):
 
       # Query the MongoDB collection for the corresponding answer to the most similar question
       answer = collection.find_one({"question": all_questions[index_of_largest]})
-      print(f"Answer: {str(answer['answer'])}")
+      # print(f"Answer: {str(answer['answer'])}")
 
       return answer['answer']
     # add by owen, end
