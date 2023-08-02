@@ -19,13 +19,23 @@ from src.mongodb import mongodb
 from datetime import datetime
 from pymongo.errors import ConnectionFailure
 from pymongo import MongoClient
-from sentence_transformers import SentenceTransformer, util
+# from sentence_transformers import SentenceTransformer, util
 
 load_dotenv('.env')
 
 app = Flask(__name__)
+
+# modify by owen 20230802, add mongodb and huggingface access secrets
 line_bot_api = LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN'))
 handler = WebhookHandler(os.getenv('LINE_CHANNEL_SECRET'))
+mdb_user = os.getenv('MONGODB_USERNAME')
+mdb_pass = os.getenv('MONGODB_PASSWORD')
+mdb_host = os.getenv('MONGODB_HOST')
+mdb_dbs = os.getenv('MONGODB_DATABAS')
+hf_host = os.getenv('HUGGINGFACE_HOST')
+hf_token = os.getenv('HUGGINGFACE_TOKEN')
+hf_sbert_model = os.getenv('HUGGINGFACE_SBERT_MODEL')
+
 storage = None
 youtube = Youtube(step=4)
 website = Website()
@@ -38,9 +48,10 @@ import os
 
 my_secret = os.environ['OPENAI_MODEL_ENGINE']
 
-# Load SBERT model (you can use any SBERT model of your choice)
-sbert_model = SentenceTransformer(
-  'sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
+# comment by owen 20230802
+# # Load SBERT model (you can use any SBERT model of your choice)
+# sbert_model = SentenceTransformer(
+#   'sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
 
 ###
 
@@ -73,8 +84,6 @@ def save_conversation_to_mongodb(user_id, user_message, bot_response,
   except Exception as e:
     print(f"Error while saving conversation data: {str(e)}")
 
-
-###
 
 
 @app.route("/callback", methods=['POST'])
@@ -215,39 +224,59 @@ def handle_text_message(event):
       msg = TextSendMessage(text=str(e))
   line_bot_api.reply_message(event.reply_token, msg)
 
+# add by owen 20230802, query HF sbert API
+def hf_sbert_query(payload):
+	response = requests.post(API_URL, headers=headers, json=payload)
+	return response.json()
+
 
 # connect to mongodb FAQ
 ###
 def get_relevant_answer_from_faq(user_question):
   try:
-    client = MongoClient(
-      'mongodb+srv://wanin:kfNIv603ukunc62t@cluster0.2hzvoh7.mongodb.net/')
-    db = client['chatbot']
+    client = MongoClient('mongodb+srv://'+mdb_user+':'+mdb_pass+'@'+mdb_host)
+    db = client[mdb_dbs]
     collection = db['faq']
 
     # Get all questions from the MongoDB collection
     all_questions = [
       entry['question'] for entry in collection.find({}, {'question': 1})
     ]
+    logger.info(f'{user_id}: {output}')
 
-    # Encode the user question using SBERT
-    user_question_embedding = sbert_model.encode([user_question])[0]
+    # comment by owen, 20230802
+    # # Encode the user question using SBERT
+    # user_question_embedding = sbert_model.encode([user_question])[0]
 
-    # Encode the FAQ questions using SBERT
-    faq_question_embeddings = sbert_model.encode(all_questions)
+    # # Encode the FAQ questions using SBERT
+    # faq_question_embeddings = sbert_model.encode(all_questions)
 
-    # Calculate the similarity between user question and FAQ questions using cosine similarity
-    similarities = util.pytorch_cos_sim(user_question_embedding,
-                                        faq_question_embeddings)[0]
+    # # Calculate the similarity between user question and FAQ questions using cosine similarity
+    # similarities = util.pytorch_cos_sim(user_question_embedding,
+    #                                     faq_question_embeddings)[0]
 
-    # Find the index of the most similar question
-    most_similar_index = similarities.argmax()
+    # # Find the index of the most similar question
+    # most_similar_index = similarities.argmax()
 
-    # Check if the similarity is above a threshold (you can adjust this threshold as needed)
-    if similarities[most_similar_index] > 0.8:
-      # Query the MongoDB collection for the corresponding answer to the most similar question
-      result = collection.find_one(
-        {"question": all_questions[most_similar_index]})
+    # # Check if the similarity is above a threshold (you can adjust this threshold as needed)
+    # if similarities[most_similar_index] > 0.8:
+    #   # Query the MongoDB collection for the corresponding answer to the most similar question
+    #   result = collection.find_one(
+    #     {"question": all_questions[most_similar_index]})
+
+    # add by owen, 20230802, compare the similarity between user-input question and frequent questions, through HuggingFace API
+    API_URL = "https://api-inference.huggingface.co/models/" + hf_sbert_model
+    headers = {"Authorization": "Bearer " + hf_token}
+
+    output = hf_sbert_query({
+      "inputs": {
+        "source_sentence": "That is a happy person",
+        "sentences": all_questions
+      },
+    })
+    logger.info(f'{user_id}: {output}')
+
+
 
       # Return the corresponding answer if found
       if result:
