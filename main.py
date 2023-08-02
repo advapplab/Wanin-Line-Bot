@@ -61,9 +61,8 @@ def save_conversation_to_mongodb(user_id, user_message, bot_response,
                                  user_timestamp, response_timestamp,
                                  response_time):
   try:
-    client = MongoClient(
-      'mongodb+srv://wanin:kfNIv603ukunc62t@cluster0.2hzvoh7.mongodb.net/')
-    db = client['chatbot']
+    client = MongoClient('mongodb+srv://'+mdb_user+':'+mdb_pass+'@'+mdb_host)
+    db = client[mdb_dbs]
     collection = db['history']
 
     # Create a document to store the conversation data
@@ -80,7 +79,7 @@ def save_conversation_to_mongodb(user_id, user_message, bot_response,
     collection.insert_one(conversation_data)
     client.close()
   except ConnectionFailure:
-    print("Failed to connect to MongoDB. Conversation data not saved.")
+    print(f"Failed to connect to MongoDB. Conversation data not saved.")
   except Exception as e:
     print(f"Error while saving conversation data: {str(e)}")
 
@@ -157,7 +156,7 @@ def handle_text_message(event):
 
       # Find the most relevant FAQ answer based on text similarity
       relevant_answer = get_relevant_answer_from_faq(text)
-      
+
       if relevant_answer:
         msg = TextSendMessage(text=relevant_answer)
         memory.append(user_id, 'assistant', relevant_answer)
@@ -284,7 +283,7 @@ def get_relevant_answer_from_faq(user_question):
 
       # Query the MongoDB collection for the corresponding answer to the most similar question
       answer = collection.find_one({"question": all_questions[index_of_largest]})
-      # print(f"Query Results4: {str(answer)}")
+      print(f"Query Results4: {str(answer)}")
     # add by owen, end
 
     if answer:
