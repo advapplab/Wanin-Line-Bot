@@ -282,7 +282,8 @@ def get_relevant_answer_from_faq(user_question):
         "sentences": all_questions
       },
     })
-    print(f"Query Results2: {str(similarity_list)}")
+    # print(f"Similarity Results: {str(similarity_list)}")
+    print(f"Max similarity: {str(max(similarity_list))}")
 
     if max(similarity_list) > 0.6:
       index_of_largest = max(range(len(similarity_list)), key=lambda i: similarity_list[i])
@@ -290,7 +291,7 @@ def get_relevant_answer_from_faq(user_question):
 
       # Query the MongoDB collection for the corresponding answer to the most similar question
       answer = collection.find_one({"question": all_questions[index_of_largest]})
-      print(f"Query Results4: {str(answer['answer'])}")
+      print(f"Answer: {str(answer['answer'])}")
 
       return answer['answer']
     # add by owen, end
@@ -302,7 +303,7 @@ def get_relevant_answer_from_faq(user_question):
     print("Failed to connect to MongoDB. Unable to retrieve answer.")
     return None
   except Exception as e:
-    traceback.print_exc()
+    # traceback.print_exc()
     print(f"Error while querying MongoDB: {str(e)}")
     return None
 
