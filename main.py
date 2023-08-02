@@ -284,6 +284,7 @@ def get_relevant_answer_from_faq(user_question):
     })
     # print(f"Similarity Results: {str(similarity_list)}")
     print(f"Max similarity: {str(max(similarity_list))}")
+    print(f"Max similarity if: {str(max(similarity_list) > 0.6)}")
 
     if max(similarity_list) > 0.6:
       index_of_largest = max(range(len(similarity_list)), key=lambda i: similarity_list[i])
