@@ -279,9 +279,7 @@ def get_relevant_answer_from_faq(user_question):
 
       # Return the corresponding answer if found
     if result:
-        return result["answer"]
-    else:
-        return None
+      return result["answer"]
     else:
       return None
 
