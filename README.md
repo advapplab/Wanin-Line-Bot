@@ -82,6 +82,9 @@
         11. HuggingFace相似度模型
             - key: `HUGGINGFACE_SBERT_MODEL`
             - value: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
+        12. 語意相似度閥值
+            - key: `BOT_SBERT_TH`
+            - value: `預設建議0.5`
 
 2. 安裝必須的套件，於畫面右下方的Shell中輸入 `pip install -r requirement.txtt`
         

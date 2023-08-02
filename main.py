@@ -37,6 +37,7 @@ mdb_dbs = os.getenv('MONGODB_DATABASE')
 hf_token = os.getenv('HUGGINGFACE_TOKEN')
 hf_sbert_model = os.getenv('HUGGINGFACE_SBERT_MODEL')
 api_key = os.getenv('OPENAI_KEY')
+bot_sbert_th = int(os.getenv('BOT_SBERT_TH'))
 
 storage = None
 youtube = Youtube(step=4)
@@ -300,7 +301,7 @@ def get_relevant_answer_from_faq(user_question):
     # print(f"Max similarity: {str(max(similarity_list))}")
     # print(f"Max similarity if: {str(max(similarity_list) > 0.6)}")
 
-    if max(similarity_list) > 0.6:
+    if max(similarity_list) > bot_sbert_th:
       index_of_largest = max(range(len(similarity_list)), key=lambda i: similarity_list[i])
       # print(f"Query Results3: {str(index_of_largest)}")
 
