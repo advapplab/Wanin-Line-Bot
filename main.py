@@ -241,7 +241,9 @@ def get_relevant_answer_from_faq(user_question):
     all_questions = [
       entry['question'] for entry in collection.find({}, {'question': 1})
     ]
-    logger.info(f'{user_id}: {output}')
+    # logger.info(f'{user_id}: {output}')
+
+    print(f"Query Results: {str(all_questions)}")
 
     # comment by owen, 20230802
     # # Encode the user question using SBERT
@@ -273,7 +275,7 @@ def get_relevant_answer_from_faq(user_question):
         "sentences": all_questions
       },
     })
-    logger.info(f'{user_id}: {output}')
+    print(f"Query Results: {str(output)}")
 
 
 
