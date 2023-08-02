@@ -37,7 +37,7 @@ mdb_dbs = os.getenv('MONGODB_DATABASE')
 hf_token = os.getenv('HUGGINGFACE_TOKEN')
 hf_sbert_model = os.getenv('HUGGINGFACE_SBERT_MODEL')
 api_key = os.getenv('OPENAI_KEY')
-bot_sbert_th = int(os.getenv('BOT_SBERT_TH'))
+bot_sbert_th = float(os.getenv('BOT_SBERT_TH'))
 
 storage = None
 youtube = Youtube(step=4)
