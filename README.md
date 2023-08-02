@@ -51,24 +51,48 @@
     2. 右方按下 `Got it` 後，即可新增環境變數，需新增：
         1. 欲選擇的模型：
             - key: `OPENAI_MODEL_ENGINE`
-            - value: `gpt-3.5-turbo`  
-        2. ChatGPT 要讓助理扮演的角色詞（目前官方無釋出更多的使用方法，由玩家自行測試）
+            - value: `gpt-3.5-turbo` 
+        2. OpenAI的Token：
+            - key: `OPENAI_KEY`
+            - value: `[請洽專案管理員]`  
+        3. ChatGPT 要讓助理扮演的角色詞（目前官方無釋出更多的使用方法，由玩家自行測試）
             - key: `SYSTEM_MESSAGE`
             - value: `You are a helpful assistant.`
-        3. Line Channel Secret:
+        4. Line Channel Secret:
             - key: `LINE_CHANNEL_SECRET`
             - value: `[由步驟一取得]`
-        4. Line Channel Access Token:
+        5. Line Channel Access Token:
             - key: `LINE_CHANNEL_ACCESS_TOKEN`
             - value: `[由步驟一取得]`
-2. 開始執行
+        6. MongnDB帳號
+            - key: `MONGODB_USERNAME`
+            - value: `[請洽專案管理員]`
+        7. MongnDB密碼
+            - key: `MONGODB_PASSWORD`
+            - value: `[請洽專案管理員]`
+        8. MongnDB主機
+            - key: `MONGODB_HOST`
+            - value: `[請洽專案管理員]`
+        9. MongnDB資料庫
+            - key: `MONGODB_DATABASE`
+            - value: `[請洽專案管理員]`
+        10. HuggingFace Token
+            - key: `HUGGINGFACE_TOKEN`
+            - value: `[請洽專案管理員]`
+        11. HuggingFace相似度模型
+            - key: `HUGGINGFACE_SBERT_MODEL`
+            - value: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
+
+2. 安裝必須的套件，於畫面右下方的Shell中輸入 `pip install -r requirement.txtt`
+        
+3. 開始執行
     1. 點擊上方的 `Run`
     2. 成功後右邊畫面會顯示 `Hello World`，並將畫面中上方的**網址複製**下來
     3. 回到 Line Developer，在 `Messaging API` 下方的 `Webhook URL` 江上方網址貼過來，並加上 `/callback` 例如：`https://ChatGPT-Line-Bot.explainthis.repl.co/callback`
     4. 打開下方的 `Use webhook`
     5. 將下方 `Auto-reply messages` 關閉
     - 注意：若一小時內沒有任何請求，則程式會中斷，因此需要下步驟
-3. CronJob 定時發送請求
+4. CronJob 定時發送請求
     1. 註冊/登入 [cron-job.org](https://cron-job.org/en/)
     2. 進入後面板右上方選擇 `CREATE CRONJOB`
     3. `Title` 輸入 `ChatGPT-Line-Bot`，網址輸入上一步驟的網址，例如：`https://ChatGPT-Line-Bot.explainthis.repl.co/`

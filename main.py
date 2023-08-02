@@ -155,15 +155,15 @@ def handle_text_message(event):
 
       # Find the most relevant FAQ answer based on text similarity
       relevant_answer = get_relevant_answer_from_faq(text)
-      print(f"relevant_answer: {relevant_answer}")
 
       if relevant_answer:
-        relevant_answer = '(FAQ資料庫)' + relevant_answer
+        relevant_answer = '(FAQ資料庫\n)' + relevant_answer
         msg = TextSendMessage(text=relevant_answer)
         memory.append(user_id, 'assistant', relevant_answer)
         response = relevant_answer
       else:
-        msg = TextSendMessage(text='找不到答案，研究團隊下階段解決')
+        # TODO: add a feature when we cannot find answer, maybe notify administrator
+        msg = TextSendMessage(text='暫時找不到答案，研究團隊下階段解決')
         memory.append(user_id, 'assistant', relevant_answer)
         response = relevant_answer
 
