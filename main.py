@@ -225,6 +225,7 @@ def handle_text_message(event):
 
 # add by owen 20230802, query HF sbert API
 def hf_sbert_query(payload):
+  import requests
 	response = requests.post(API_URL, headers=headers, json=payload)
 	return response.json()
 
