@@ -297,12 +297,12 @@ def get_relevant_answer_from_faq(user_question):
     else:
       return None
 
-  except ConnectionFailure:
-    print("Failed to connect to MongoDB. Unable to retrieve answer.")
-    return None
-  except Exception as e:
-    print(f"Error while querying MongoDB: {str(e)}")
-    return None
+  # except ConnectionFailure:
+  #   print("Failed to connect to MongoDB. Unable to retrieve answer.")
+  #   return None
+  # except Exception as e:
+  #   print(f"Error while querying MongoDB: {str(e)}")
+  #   return None
 
 
 @handler.add(MessageEvent, message=AudioMessage)
