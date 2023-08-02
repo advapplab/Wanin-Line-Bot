@@ -157,6 +157,7 @@ def handle_text_message(event):
 
       # Find the most relevant FAQ answer based on text similarity
       relevant_answer = get_relevant_answer_from_faq(text)
+      
       if relevant_answer:
         msg = TextSendMessage(text=relevant_answer)
         memory.append(user_id, 'assistant', relevant_answer)
@@ -269,28 +270,25 @@ def get_relevant_answer_from_faq(user_question):
     #     {"question": all_questions[most_similar_index]})
 
     # add by owen, 20230802, compare the similarity between user-input question and frequent questions, through HuggingFace API
-
     similarity_list = hf_sbert_query({
       "inputs": {
         "source_sentence": user_question,
         "sentences": all_questions
       },
     })
-    print(f"Query Results2: {str(similarity_list)}")
+    # print(f"Query Results2: {str(similarity_list)}")
 
     if max(similarity_list) > 0.6:
       index_of_largest = max(range(len(similarity_list)), key=lambda i: similarity_list[i])
-      print(f"Query Results3: {str(index_of_largest)}")
+      # print(f"Query Results3: {str(index_of_largest)}")
 
       # Query the MongoDB collection for the corresponding answer to the most similar question
       answer = collection.find_one({"question": all_questions[index_of_largest]})
-      print(f"Query Results4: {str(answer)}")
+      # print(f"Query Results4: {str(answer)}")
+    # add by owen, end
 
-
-
-      # Return the corresponding answer if found
-    if result:
-      return result["answer"]
+    if answer:
+      return answer
     else:
       return None
 
