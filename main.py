@@ -286,7 +286,7 @@ def get_relevant_answer_from_faq(user_question):
       answer = collection.find_one({"question": all_questions[index_of_largest]})
       print(f"Query Results4: {str(answer['answer'])}")
 
-      return answer
+      return answer['answer']
     # add by owen, end
 
     else:
