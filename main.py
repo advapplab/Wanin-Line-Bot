@@ -230,8 +230,8 @@ def hf_sbert_query(payload):
   API_URL = "https://api-inference.huggingface.co/models/" + hf_sbert_model
   headers = {"Authorization": "Bearer " + hf_token}
 
-	response = requests.post(API_URL, headers=headers, json=payload)
-	return response.json()
+  response = requests.post(API_URL, headers=headers, json=payload)
+  return response.json()
 
 
 # connect to mongodb FAQ
