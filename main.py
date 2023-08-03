@@ -168,18 +168,30 @@ def handle_text_message(event):
       memory.append(user_id, 'user', text)
 
       # Find the most relevant FAQ answer based on text similarity
-      relevant_answer = get_relevant_answer_from_faq(text)
+      relevant_answer = get_relevant_answer_from_faq(text, 'faq')
 
+      # TODO: this nest if-else should be simplified
       if relevant_answer:
         relevant_answer = '(FAQ資料庫\n)' + relevant_answer
         msg = TextSendMessage(text=relevant_answer)
         memory.append(user_id, 'assistant', relevant_answer)
         response = relevant_answer
       else:
-        # TODO: add a feature when we cannot find answer, maybe notify administrator
-        msg = TextSendMessage(text='暫時找不到答案，研究團隊下階段解決')
-        memory.append(user_id, 'assistant', relevant_answer)
-        response = relevant_answer
+
+        relevant_answer = get_relevant_answer_from_faq(text, 'manual')
+
+        if relevant_answer:
+          relevant_answer = '(FAQ資料庫\n)' + relevant_answer
+          msg = TextSendMessage(text=relevant_answer)
+          memory.append(user_id, 'assistant', relevant_answer)
+          response = relevant_answer
+
+        else:
+
+          # TODO: add a feature when we cannot find answer, maybe notify administrator
+          msg = TextSendMessage(text='暫時找不到答案，研究團隊下階段解決')
+          memory.append(user_id, 'assistant', relevant_answer)
+          response = relevant_answer
 
       # else:
       #   url = website.get_url_from_text(text)
@@ -254,12 +266,13 @@ def hf_sbert_query(payload):
   return response.json()
 
 
+
 # connect to mongodb FAQ
-def get_relevant_answer_from_faq(user_question):
+def get_relevant_answer_from_faq(user_question, type):
   try:
     client = MongoClient('mongodb+srv://'+mdb_user+':'+mdb_pass+'@'+mdb_host)
     db = client[mdb_dbs]
-    collection = db['faq']
+    collection = db[type]
 
     # Get all questions from the MongoDB collection
     all_questions = [
