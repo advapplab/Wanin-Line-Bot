@@ -265,7 +265,7 @@ def get_relevant_answer_from_faq(user_question):
     all_questions = [
       entry['question'] for entry in collection.find({}, {'question': 1})
     ]
-    print(f"Answer: {str(all_questions)}")
+    print(f"Answers: {str(all_questions)}")
 
     # comment by owen, 20230802
     # # Encode the user question using SBERT
