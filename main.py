@@ -181,7 +181,7 @@ def handle_text_message(event):
         relevant_answer = get_relevant_answer_from_faq(text, 'manual')
 
         if relevant_answer:
-          relevant_answer = '(FAQ資料庫\n)' + relevant_answer
+          relevant_answer = '(FAQ資料庫)\n' + relevant_answer
           msg = TextSendMessage(text=relevant_answer)
           memory.append(user_id, 'assistant', relevant_answer)
           response = relevant_answer
