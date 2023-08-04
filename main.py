@@ -263,6 +263,10 @@ def hf_sbert_query(payload):
   headers = {"Authorization": "Bearer " + hf_token}
 
   response = requests.post(API_URL, headers=headers, json=payload)
+
+  if 'error' in response.json():
+    print(f"Error: {str(contain error)}")
+
   return response.json()
 
 
@@ -278,7 +282,7 @@ def get_relevant_answer_from_faq(user_question, type):
     all_questions = [
       entry['question'] for entry in collection.find({}, {'question': 1})
     ]
-    print(f"Answers: {str(all_questions)}")
+    # print(f"Answers: {str(all_questions)}")
 
     # comment by owen, 20230802
     # # Encode the user question using SBERT
@@ -310,7 +314,7 @@ def get_relevant_answer_from_faq(user_question, type):
         "sentences": all_questions
       },
     })
-    print(f"Similarity Results: {str(similarity_list)}")
+    # print(f"Similarity Results: {str(similarity_list)}")
     # print(f"Max similarity: {str(max(similarity_list))}")
     # print(f"Max similarity if: {str(max(similarity_list) > 0.6)}")
 
