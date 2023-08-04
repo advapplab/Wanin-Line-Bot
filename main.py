@@ -264,15 +264,15 @@ def hf_sbert_query(payload):
   API_URL = "https://api-inference.huggingface.co/models/" + hf_sbert_model
   headers = {"Authorization": "Bearer " + hf_token}
 
-
+  # add by owen, 20230804, detect if HF API is loading, if loading, then wait 1 second.
   while True:
     response = requests.post(API_URL, headers=headers, json=payload)
 
     if 'error' in response.json():
-      print(f"Error2: {str(response.json())}")
+      print(f"HuggingFace API is loading: {str(response.json())}")
       time.sleep(1)  # Sleep for 1 second
     else:
-      print(f"Error3: {str('safe')}")
+      # print(f"Error3: {str('safe')}")
       break
 
   return response.json()
