@@ -265,7 +265,7 @@ def hf_sbert_query(payload):
   response = requests.post(API_URL, headers=headers, json=payload)
 
   if 'error' in response.json():
-    print(f"Error: {str('contain error')}")
+    print(f"Error: {str(response.json())}")
 
   return response.json()
 
