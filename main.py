@@ -172,7 +172,7 @@ def handle_text_message(event):
 
       # TODO: this nest if-else should be simplified
       if relevant_answer:
-        relevant_answer = '(FAQ資料庫\n)' + relevant_answer
+        relevant_answer = '(FAQ資料庫)\n' + relevant_answer
         msg = TextSendMessage(text=relevant_answer)
         memory.append(user_id, 'assistant', relevant_answer)
         response = relevant_answer
