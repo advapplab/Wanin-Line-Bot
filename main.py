@@ -264,9 +264,10 @@ def hf_sbert_query(payload):
 
   response = requests.post(API_URL, headers=headers, json=payload)
 
-  print(f"Error1: {str(response.json())}")
   if 'error' in response.json():
     print(f"Error2: {str(response.json())}")
+  else:
+    print(f"Error3: {str('safe')}")
 
   return response.json()
 
