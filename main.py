@@ -259,15 +259,21 @@ def handle_text_message(event):
 # add by owen 20230802, query HF sbert API
 def hf_sbert_query(payload):
 
+  import time
+
   API_URL = "https://api-inference.huggingface.co/models/" + hf_sbert_model
   headers = {"Authorization": "Bearer " + hf_token}
 
-  response = requests.post(API_URL, headers=headers, json=payload)
 
-  if 'error' in response.json():
-    print(f"Error2: {str(response.json())}")
-  else:
-    print(f"Error3: {str('safe')}")
+  while True:
+    response = requests.post(API_URL, headers=headers, json=payload)
+
+    if 'error' in response.json():
+      print(f"Error2: {str(response.json())}")
+      time.sleep(1)  # Sleep for 1 second
+    else:
+      print(f"Error3: {str('safe')}")
+      break
 
   return response.json()
 
