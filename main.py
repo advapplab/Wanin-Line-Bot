@@ -192,6 +192,8 @@ def handle_text_message(event):
           msg = TextSendMessage(text='暫時找不到答案，研究團隊下階段解決')
           memory.append(user_id, 'assistant', relevant_answer)
           response = relevant_answer
+          # add a record to MongoDB for incorrect responses
+          save_incorrect_response_to_mongodb(user_id, text)
 
       # else:
       #   url = website.get_url_from_text(text)
@@ -347,6 +349,27 @@ def get_relevant_answer_from_faq(user_question, type):
     # traceback.print_exc()
     print(f"Error while querying MongoDB: {str(traceback.print_exc())}")
     return None
+
+# function to save incorrect responses to MongoDB
+def save_incorrect_response_to_mongodb(user_id, incorrect_question):
+    try:
+        client = MongoClient('mongodb+srv://'+mdb_user+':'+mdb_pass+'@'+mdb_host)
+        db = client[mdb_dbs]
+        collection = db['incorrect_responses']
+
+        # Create a document to store the incorrect response data
+        incorrect_data = {
+            'user_id': user_id,
+            'incorrect_question': incorrect_question,
+        }
+
+        # Insert the document into the collection
+        collection.insert_one(incorrect_data)
+        client.close()
+    except ConnectionFailure:
+        print(f"Failed to connect to MongoDB. Incorrect response data not saved.")
+    except Exception as e:
+        print(f"Error while saving incorrect response data: {str(e)}")
 
 
 @handler.add(MessageEvent, message=AudioMessage)
