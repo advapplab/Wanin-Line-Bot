@@ -100,13 +100,15 @@ def callback():
     abort(400)
   return 'OK'
 
+#prompt = 
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
   user_id = event.source.user_id
   user_message = event.message.text.strip()
   user_timestamp = datetime.now()
-  text = event.message.text.strip()
+  text = event.message.text.strip() #Adjust code here. Suggested by Jasper on 10/8/23
+  #text = prompt + text 
   logger.info(f'{user_id}: {text}')
 
   try:
