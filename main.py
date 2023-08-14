@@ -63,7 +63,8 @@ def save_conversation_to_mongodb(user_id, user_message, bot_response,
                                  user_timestamp, response_timestamp,
                                  response_time):
   try:
-    client = MongoClient('mongodb+srv://'+mdb_user+':'+mdb_pass+'@'+mdb_host)
+    client = MongoClient('mongodb+srv://' + mdb_user + ':' + mdb_pass + '@' +
+                         mdb_host)
     db = client[mdb_dbs]
     collection = db['history']
 
@@ -100,15 +101,18 @@ def callback():
     abort(400)
   return 'OK'
 
-#prompt = 
+
+#prompt =
+
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
   user_id = event.source.user_id
   user_message = event.message.text.strip()
   user_timestamp = datetime.now()
-  text = event.message.text.strip() #Adjust code here. Suggested by Jasper on 10/8/23
-  #text = prompt + text 
+  text = event.message.text.strip(
+  )  #Adjust code here. Suggested by Jasper on 10/8/23
+  #text = prompt + text
   logger.info(f'{user_id}: {text}')
 
   try:
@@ -122,7 +126,6 @@ def handle_text_message(event):
     # TODO: be sure not duplicated in db.json
     storage.save({user_id: api_key})
     # add end
-
 
     if text.startswith('/註冊'):
       # api_key = text[3:].strip()
@@ -174,7 +177,7 @@ def handle_text_message(event):
 
       # TODO: this nest if-else should be simplified
       if relevant_answer:
-        relevant_answer = '(FAQ資料庫)\n' + relevant_answer
+        relevant_answer = '(FAQ資料庫lalala)\n' + relevant_answer
         msg = TextSendMessage(text=relevant_answer)
         memory.append(user_id, 'assistant', relevant_answer)
         response = relevant_answer
@@ -183,7 +186,7 @@ def handle_text_message(event):
         relevant_answer = get_relevant_answer_from_faq(text, 'manual')
 
         if relevant_answer:
-          relevant_answer = '(FAQ資料庫)\n' + relevant_answer
+          relevant_answer = '(FAQ資料庫lalala)\n' + relevant_answer
           msg = TextSendMessage(text=relevant_answer)
           memory.append(user_id, 'assistant', relevant_answer)
           response = relevant_answer
@@ -260,6 +263,7 @@ def handle_text_message(event):
       msg = TextSendMessage(text=str(e))
   line_bot_api.reply_message(event.reply_token, msg)
 
+
 # add by owen 20230802, query HF sbert API
 def hf_sbert_query(payload):
 
@@ -282,11 +286,11 @@ def hf_sbert_query(payload):
   return response.json()
 
 
-
 # connect to mongodb FAQ
 def get_relevant_answer_from_faq(user_question, type):
   try:
-    client = MongoClient('mongodb+srv://'+mdb_user+':'+mdb_pass+'@'+mdb_host)
+    client = MongoClient('mongodb+srv://' + mdb_user + ':' + mdb_pass + '@' +
+                         mdb_host)
     db = client[mdb_dbs]
     collection = db[type]
 
@@ -317,7 +321,6 @@ def get_relevant_answer_from_faq(user_question, type):
     #     {"question": all_questions[most_similar_index]})
     #   print(f"Query Results4: {str(result)}")
     # return result
-    
 
     # add by owen, 20230802, compare the similarity between user-input question and frequent questions, through HuggingFace API
     similarity_list = hf_sbert_query({
@@ -331,11 +334,13 @@ def get_relevant_answer_from_faq(user_question, type):
     # print(f"Max similarity if: {str(max(similarity_list) > 0.6)}")
 
     if max(similarity_list) > bot_sbert_th:
-      index_of_largest = max(range(len(similarity_list)), key=lambda i: similarity_list[i])
+      index_of_largest = max(range(len(similarity_list)),
+                             key=lambda i: similarity_list[i])
       # print(f"Query Results3: {str(index_of_largest)}")
 
       # Query the MongoDB collection for the corresponding answer to the most similar question
-      answer = collection.find_one({"question": all_questions[index_of_largest]})
+      answer = collection.find_one(
+        {"question": all_questions[index_of_largest]})
       # print(f"Answer: {str(answer['answer'])}")
 
       return answer['answer']
@@ -352,26 +357,28 @@ def get_relevant_answer_from_faq(user_question, type):
     print(f"Error while querying MongoDB: {str(traceback.print_exc())}")
     return None
 
+
 # function to save incorrect responses to MongoDB
 def save_incorrect_response_to_mongodb(user_id, incorrect_question):
-    try:
-        client = MongoClient('mongodb+srv://'+mdb_user+':'+mdb_pass+'@'+mdb_host)
-        db = client[mdb_dbs]
-        collection = db['incorrect_responses']
+  try:
+    client = MongoClient('mongodb+srv://' + mdb_user + ':' + mdb_pass + '@' +
+                         mdb_host)
+    db = client[mdb_dbs]
+    collection = db['incorrect_responses']
 
-        # Create a document to store the incorrect response data
-        incorrect_data = {
-            'user_id': user_id,
-            'incorrect_question': incorrect_question,
-        }
+    # Create a document to store the incorrect response data
+    incorrect_data = {
+      'user_id': user_id,
+      'incorrect_question': incorrect_question,
+    }
 
-        # Insert the document into the collection
-        collection.insert_one(incorrect_data)
-        client.close()
-    except ConnectionFailure:
-        print(f"Failed to connect to MongoDB. Incorrect response data not saved.")
-    except Exception as e:
-        print(f"Error while saving incorrect response data: {str(e)}")
+    # Insert the document into the collection
+    collection.insert_one(incorrect_data)
+    client.close()
+  except ConnectionFailure:
+    print(f"Failed to connect to MongoDB. Incorrect response data not saved.")
+  except Exception as e:
+    print(f"Error while saving incorrect response data: {str(e)}")
 
 
 @handler.add(MessageEvent, message=AudioMessage)
