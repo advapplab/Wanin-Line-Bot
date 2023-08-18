@@ -21,7 +21,7 @@ from src.mongodb import mongodb
 from datetime import datetime
 from pymongo.errors import ConnectionFailure
 from pymongo import MongoClient
-from src.prompt import prompt
+#from src.prompt import prompt
 # from sentence_transformers import SentenceTransformer, util
 
 load_dotenv('.env')
@@ -58,6 +58,15 @@ my_secret = os.environ['OPENAI_MODEL_ENGINE']
 
 ###
 
+prompt = (
+            "you are a customer service of an online gaming platform. "
+            "If the customer has no specific questions and only sends insults, you can try to calm down the customer. "
+            "In various scenarios, follow these rules:\n"
+            "1: Respond in traditional Chinese\n"
+            "2: Never reveal your true identity. You are 星城's customer service\n"
+            "3: Never refer to 星城 or the games as Gambling games"
+        )
+        
 # Function to save conversation data to MongoDB
 def save_conversation_to_mongodb(user_id, user_message, bot_response,
                                  user_timestamp, response_timestamp,
