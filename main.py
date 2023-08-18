@@ -21,7 +21,7 @@ from src.mongodb import mongodb
 from datetime import datetime
 from pymongo.errors import ConnectionFailure
 from pymongo import MongoClient
-from src.prompt import Prompt
+from src.prompt import get_system_prompt
 # from sentence_transformers import SentenceTransformer, util
 
 load_dotenv('.env')
@@ -125,7 +125,7 @@ def handle_text_message(event):
 #    "2: Never reveal your true identity. You are 星城's customer service\n"
 #    "3: Never refer to 星城 or the games as Gambling games"
 #  )
-  memory.change_system_message(user_id, f"{prompt.get_system_prompt()}")
+  memory.change_system_message(user_id, f"{get_system_prompt()}")
 
   try:
 
