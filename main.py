@@ -118,7 +118,7 @@ def handle_text_message(event):
 
   ###
   system_prompt = (
-    "you are a customer service of an online gaming platform. "
+    "you are a customer service of 星城 online gaming platform. "
     "If the customer has no specific questions and only sends insults, you can try to calm down the customer. "
     "In various scenarios, follow these rules:\n"
     "1: Respond in traditional Chinese\n"
