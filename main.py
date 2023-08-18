@@ -184,10 +184,11 @@ def handle_text_message(event):
       latest_assistant_message = memory.get_latest_assistant_message(user_id)
 
       # Construct the incorrect response data
-      incorrect_question = latest_user_message + '\n' + latest_assistant_message
+      user_message = latest_user_message
+      incorrect_response = latest_assistant_message
 
       # Save the incorrect response data to MongoDB
-      save_incorrect_response_to_mongodb(user_id, incorrect_question)
+      save_incorrect_response_to_mongodb(user_id, user_message, incorrect_response)
 
       msg = TextSendMessage(text='已將對話存入不正確回答資料庫')
 
@@ -390,7 +391,7 @@ def get_relevant_answer_from_faq(user_question, type):
 
 
 # function to save incorrect responses to MongoDB
-def save_incorrect_response_to_mongodb(user_id, incorrect_question):
+def save_incorrect_response_to_mongodb(user_id, user_message, incorrect_response):
   try:
     client = MongoClient('mongodb+srv://' + mdb_user + ':' + mdb_pass + '@' +
                              mdb_host)
@@ -400,7 +401,8 @@ def save_incorrect_response_to_mongodb(user_id, incorrect_question):
     # Create a document to store the incorrect response data
     incorrect_data = {
         'user_id': user_id,
-        'incorrect_question': incorrect_question,
+        'user_message': user_message,
+        'incorrect_response' : incorrect_response,
     }
 
     # Insert the document into the collection
