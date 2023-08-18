@@ -21,7 +21,7 @@ from src.mongodb import mongodb
 from datetime import datetime
 from pymongo.errors import ConnectionFailure
 from pymongo import MongoClient
-from src.prompt import system_prompt
+from src.prompt import Prompt
 # from sentence_transformers import SentenceTransformer, util
 
 load_dotenv('.env')
