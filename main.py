@@ -66,7 +66,7 @@ prompt = (
             "2: Never reveal your true identity. You are 星城's customer service\n"
             "3: Never refer to 星城 or the games as Gambling games"
         )
-        
+
 # Function to save conversation data to MongoDB
 def save_conversation_to_mongodb(user_id, user_message, bot_response,
                                  user_timestamp, response_timestamp,
@@ -176,6 +176,20 @@ def handle_text_message(event):
       url = response['data'][0]['url']
       msg = ImageSendMessage(original_content_url=url, preview_image_url=url)
       memory.append(user_id, 'assistant', url)
+
+    # save incorrect responses
+    elif text.startswith('不正確'):
+      # Extract the latest user and assistant messages from the memory
+      latest_user_message = memory.get_latest_user_message(user_id)
+      latest_assistant_message = memory.get_latest_assistant_message(user_id)
+
+      # Construct the incorrect response data
+      incorrect_question = latest_user_message + '\n' + latest_assistant_message
+
+      # Save the incorrect response data to MongoDB
+      save_incorrect_response_to_mongodb(user_id, incorrect_question)
+
+      msg = TextSendMessage(text='已將對話存入不正確回答資料庫')
 
     else:
       user_model = model_management[user_id]
@@ -380,21 +394,21 @@ def get_relevant_answer_from_faq(user_question, type):
 def save_incorrect_response_to_mongodb(user_id, incorrect_question):
   try:
     client = MongoClient('mongodb+srv://' + mdb_user + ':' + mdb_pass + '@' +
-                         mdb_host)
+                             mdb_host)
     db = client[mdb_dbs]
     collection = db['incorrect_responses']
 
     # Create a document to store the incorrect response data
     incorrect_data = {
-      'user_id': user_id,
-      'incorrect_question': incorrect_question,
+        'user_id': user_id,
+        'incorrect_question': incorrect_question,
     }
 
     # Insert the document into the collection
     collection.insert_one(incorrect_data)
     client.close()
   except ConnectionFailure:
-    print(f"Failed to connect to MongoDB. Incorrect response data not saved.")
+    print("Failed to connect to MongoDB. Incorrect response data not saved.")
   except Exception as e:
     print(f"Error while saving incorrect response data: {str(e)}")
 
