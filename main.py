@@ -198,7 +198,7 @@ def handle_text_message(event):
           # Generate a response using the combined prompt
           is_successful, response, error_message = user_model.chat_completions(
             memory.get(user_id), os.getenv('OPENAI_MODEL_ENGINE'),
-            Linebot_Prompt)
+            prompt)
           # Pass the combined prompt here
           if not is_successful:
             raise Exception(error_message)
