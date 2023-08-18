@@ -21,6 +21,7 @@ from src.mongodb import mongodb
 from datetime import datetime
 from pymongo.errors import ConnectionFailure
 from pymongo import MongoClient
+import Linebot_Prompt
 # from sentence_transformers import SentenceTransformer, util
 
 load_dotenv('.env')
@@ -56,17 +57,6 @@ my_secret = os.environ['OPENAI_MODEL_ENGINE']
 #   'sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
 
 ###
-
-# Define the conversation prompt
-prompt = (
-    "you are a customer service of an online gaming platform. "
-    "If you receive a specific question, you can answer it according to the frequently asked questions below. " + relevant_faq +
-    "If the customer has no specific questions and only sends insults, you can try to calm down the customer. "
-    "there are some rules you have to stick to in all of your answer:\n"
-    "1: the response has to be in traditional Chinese\n"
-    "2: never reveal your true identity. you are 星城's customer service\n"
-    "3: never refer to 星城 or the games it offers as Gambling games"
-)
 
 # Function to save conversation data to MongoDB
 def save_conversation_to_mongodb(user_id, user_message, bot_response,
@@ -202,13 +192,22 @@ def handle_text_message(event):
           response = relevant_answer
 
         else:
-
           # TODO: add a feature when we cannot find answer, maybe notify administrator
-          msg = TextSendMessage(text='暫時找不到答案，研究團隊下階段解決')
-          memory.append(user_id, 'assistant', relevant_answer)
-          response = relevant_answer
-          # add a record to MongoDB for incorrect responses
-          save_incorrect_response_to_mongodb(user_id, text)
+          user_model = model_management[user_id]
+
+          # Generate a response using the combined prompt
+          is_successful, response, error_message = user_model.chat_completions(
+            memory.get(user_id), os.getenv('OPENAI_MODEL_ENGINE'),
+            Linebot_Prompt)
+          # Pass the combined prompt here
+          if not is_successful:
+            raise Exception(error_message)
+
+          # Get role and content from the response
+          role, response = get_role_and_content(response)
+          msg = TextSendMessage(text=response)
+          memory.append(user_id, role, response)
+          
 
       # else:
       #   url = website.get_url_from_text(text)
