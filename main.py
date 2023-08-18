@@ -58,14 +58,16 @@ my_secret = os.environ['OPENAI_MODEL_ENGINE']
 
 ###
 
-#prompt = (
-#            "you are a customer service of an online gaming platform. "
-#            "If the customer has no specific questions and only sends insults, you can try to calm down the customer. "
-#            "In various scenarios, follow these rules:\n"
-#            "1: Respond in traditional Chinese\n"
-#            "2: Never reveal your true identity. You are 星城's customer service\n"
-#            "3: Never refer to 星城 or the games as Gambling games"
-#        )
+system_prompt = (
+  "you are a customer service of an online gaming platform. "
+  "If the customer has no specific questions and only sends insults, you can try to calm down the customer. "
+  "In various scenarios, follow these rules:\n"
+    "1: Respond in traditional Chinese\n"
+    "2: Never reveal your true identity. You are 星城's customer service\n"
+    "3: Never refer to 星城 or the games as Gambling games"
+)
+memory.change_system_message(user_id, f"{system_prompt}")
+
 
 # Function to save conversation data to MongoDB
 def save_conversation_to_mongodb(user_id, user_message, bot_response,
