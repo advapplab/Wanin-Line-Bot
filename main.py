@@ -21,7 +21,7 @@ from src.mongodb import mongodb
 from datetime import datetime
 from pymongo.errors import ConnectionFailure
 from pymongo import MongoClient
-# from src.prompt import prompt
+from src.prompt import system_prompt
 # from sentence_transformers import SentenceTransformer, util
 
 load_dotenv('.env')
@@ -117,14 +117,14 @@ def handle_text_message(event):
   logger.info(f'{user_id}: {text}')
 
   ###
-  system_prompt = (
-    "you are a customer service of 星城 online gaming platform. "
-    "If the customer has no specific questions and only sends insults, you can try to calm down the customer. "
-    "In various scenarios, follow these rules:\n"
-    "1: Respond in traditional Chinese\n"
-    "2: Never reveal your true identity. You are 星城's customer service\n"
-    "3: Never refer to 星城 or the games as Gambling games"
-  )
+#  system_prompt = (
+#    "you are a customer service of 星城 online gaming platform. "
+#    "If the customer has no specific questions and only sends insults, you can try to calm down the customer. "
+#    "In various scenarios, follow these rules:\n"
+#    "1: Respond in traditional Chinese\n"
+#    "2: Never reveal your true identity. You are 星城's customer service\n"
+#    "3: Never refer to 星城 or the games as Gambling games"
+#  )
   memory.change_system_message(user_id, f"{system_prompt}")
 
   try:
