@@ -125,7 +125,7 @@ def handle_text_message(event):
 #    "2: Never reveal your true identity. You are 星城's customer service\n"
 #    "3: Never refer to 星城 or the games as Gambling games"
 #  )
-  memory.change_system_message(user_id, f"{system_prompt}")
+  memory.change_system_message(user_id, f"{prompt.get_system_prompt()}")
 
   try:
 
