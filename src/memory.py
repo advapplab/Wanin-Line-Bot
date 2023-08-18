@@ -52,7 +52,7 @@ class Memory(MemoryInterface):
     def get_latest_user_message(self, user_id):
         user_memory = self.get(user_id)
         if user_memory:
-            user_messages = user_memory['user']
+            user_messages = [message['content'] for message in user_memory if message['role'] == 'user']
             if user_messages:
                 return user_messages[-1]
         return None
