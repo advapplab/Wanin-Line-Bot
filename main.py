@@ -187,7 +187,7 @@ def handle_text_message(event):
       latest_assistant_message = memory.get_latest_assistant_message(user_id)
 
       # Construct the incorrect response data
-      user_message = "This is a valid user message"
+      user_message = latest_user_message
       incorrect_response = latest_assistant_message
 
       # Save the incorrect response data to MongoDB
