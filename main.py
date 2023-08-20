@@ -220,6 +220,10 @@ def handle_text_message(event):
 
         else:
           # TODO: add a feature when we cannot find answer, maybe notify administrator
+#         msg = TextSendMessage(text = '暫時找不到答案，研究團隊下階段解決')
+#         memory.append(user_id, 'assistant', relevant_answer)
+#         response = relevant_answer
+
           user_model = model_management[user_id]
 
           # Generate a response using the combined prompt

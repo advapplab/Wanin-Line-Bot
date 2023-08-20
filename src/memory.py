@@ -49,6 +49,7 @@ class Memory(MemoryInterface):
     def remove(self, user_id: str) -> None:
         self.storage[user_id] = []
 
+###
     def get_latest_user_message(self, user_id):
         user_memory = self.get(user_id)
         if user_memory:
@@ -56,6 +57,7 @@ class Memory(MemoryInterface):
             if user_messages:
                 return user_messages[-1]
         return None
+        
     def get_latest_assistant_message(self, user_id):
         user_memory = self.get(user_id)
         if user_memory:
