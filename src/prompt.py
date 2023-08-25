@@ -13,7 +13,7 @@ class Prompt:
     def get_FAQ_prompt():
         FAQ_prompt = (
             "you are a customer service of an online gaming platform."
-            "If you receive a specific question, you can answer it according to the frequently asked questions below." + relevant_faq +
+            "If you receive a specific question, you can answer it according to the frequently asked questions below." + relevant_faq
             "If the customer has no specific questions and only sends insults, you can try to calm down the customer. 
             "There are some rules you have to stick to in all of your answer:\n"
             "1: the response has to be in traditional Chinese\n"
