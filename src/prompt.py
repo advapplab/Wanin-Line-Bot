@@ -24,5 +24,3 @@ class Prompt:
         "3: never refer to 星城 or the games it offers as Gambling games"
     )
         return FAQ_prompt
-
-prompt = Prompt()
