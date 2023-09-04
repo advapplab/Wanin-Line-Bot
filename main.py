@@ -200,7 +200,9 @@ def handle_text_message(event):
 
       # Find the most relevant FAQ answer based on text similarity
       relevant_answer = get_relevant_answer_from_faq(text, 'faq')
-      memory.change_system_message(user_id, f"{get_FAQ_prompt()}")
+
+      memory.change_system_message(user_id, f"{prompt.get_FAQ_prompt()}")
+
       # TODO: this nest if-else should be simplified
       if relevant_answer:
         relevant_answer = '(FAQ資料庫)\n' + relevant_answer
@@ -223,7 +225,7 @@ def handle_text_message(event):
 #         memory.append(user_id, 'assistant', relevant_answer)
 #         response = relevant_answer
 
-          memory.change_system_message(user_id, f"{get_noanswer_prompt()}")
+          memory.change_system_message(user_id, f"{prompt.get_noanswer_prompt()}")
 
 
           user_model = model_management[user_id]
