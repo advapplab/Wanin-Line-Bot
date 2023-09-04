@@ -116,6 +116,8 @@ def handle_text_message(event):
   )  #Adjust code here. Suggested by Jasper on 10/8/23
   #text = prompt + text
   logger.info(f'{user_id}: {text}')
+  noanswer_prompt = prompt_instance.get_noanswer_prompt()
+  FAQ_prompt = prompt_instance.get_FAQ_prompt()
 
   ###
 #  system_prompt = (
@@ -202,7 +204,7 @@ def handle_text_message(event):
       # Find the most relevant FAQ answer based on text similarity
       relevant_answer = get_relevant_answer_from_faq(text, 'faq')
 
-      memory.change_system_message(user_id, f"{prompt_instance.get_FAQ_prompt()}")
+      memory.change_system_message(user_id, f"{FAQ_prompt}")
 
       # TODO: this nest if-else should be simplified
       if relevant_answer:
@@ -226,7 +228,7 @@ def handle_text_message(event):
 #         memory.append(user_id, 'assistant', relevant_answer)
 #         response = relevant_answer
 
-          memory.change_system_message(user_id, f"{prompt_instance.get_noanswer_prompt()}")
+          memory.change_system_message(user_id, f"{noanswer_prompt}")
 
 
           user_model = model_management[user_id]
