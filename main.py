@@ -21,7 +21,7 @@ from src.mongodb import mongodb
 from datetime import datetime
 from pymongo.errors import ConnectionFailure
 from pymongo import MongoClient
-from src.prompt import Prompt
+from src.prompt import prompt
 # from sentence_transformers import SentenceTransformer, util
 
 load_dotenv('.env')
@@ -125,7 +125,6 @@ def handle_text_message(event):
 #    "2: Never reveal your true identity. You are 星城's customer service\n"
 #    "3: Never refer to 星城 or the games as Gambling games"
 #  )
-  memory.change_system_message(user_id, f"{get_system_prompt()}")
 
   try:
 
@@ -201,7 +200,7 @@ def handle_text_message(event):
 
       # Find the most relevant FAQ answer based on text similarity
       relevant_answer = get_relevant_answer_from_faq(text, 'faq')
-
+      memory.change_system_message(user_id, f"{get_FAQ_prompt()}")
       # TODO: this nest if-else should be simplified
       if relevant_answer:
         relevant_answer = '(FAQ資料庫)\n' + relevant_answer
@@ -223,6 +222,9 @@ def handle_text_message(event):
 #         msg = TextSendMessage(text = '暫時找不到答案，研究團隊下階段解決')
 #         memory.append(user_id, 'assistant', relevant_answer)
 #         response = relevant_answer
+
+          memory.change_system_message(user_id, f"{get_noanswer_prompt()}")
+
 
           user_model = model_management[user_id]
 

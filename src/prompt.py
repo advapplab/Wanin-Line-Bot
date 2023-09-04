@@ -22,3 +22,5 @@ class Prompt:
     )
     def get_FAQ_prompt():
         return FAQ_prompt
+
+prompt = Prompt()
