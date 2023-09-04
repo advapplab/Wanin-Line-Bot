@@ -41,7 +41,7 @@ api_key = os.getenv('OPENAI_KEY')
 bot_sbert_th = float(os.getenv('BOT_SBERT_TH'))
 
 storage = None
-prompt = None
+prompt = Prompt()
 youtube = Youtube(step=4)
 website = Website()
 
