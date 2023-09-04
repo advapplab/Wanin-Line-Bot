@@ -1,7 +1,7 @@
 # add by NN, 20230818, prompt
 class Prompt:
     
-    def get_noanswer_prompt():
+    def get_noanswer_prompt(self):
         noanswer_prompt = (
         "You are a customer service of 星城 online gaming platform.\n"
         "If the customer has no specific questions and only sends insults, you can try to calm down the customer.\n"
@@ -13,7 +13,7 @@ class Prompt:
         return noanswer_prompt
 
     
-    def get_FAQ_prompt():
+    def get_FAQ_prompt(self):
         FAQ_prompt = (
         "You are a customer service of 星城 online gaming platform.\n"
         "If you receive a specific question, you can answer it according to the frequently asked questions below.\n"
