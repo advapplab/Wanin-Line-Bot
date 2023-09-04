@@ -41,7 +41,7 @@ api_key = os.getenv('OPENAI_KEY')
 bot_sbert_th = float(os.getenv('BOT_SBERT_TH'))
 
 storage = None
-prompt = Prompt()
+prompt_instance = Prompt()
 youtube = Youtube(step=4)
 website = Website()
 
@@ -202,8 +202,7 @@ def handle_text_message(event):
       # Find the most relevant FAQ answer based on text similarity
       relevant_answer = get_relevant_answer_from_faq(text, 'faq')
 
-      prompt = prompt.get_FAQ_prompt()
-      memory.change_system_message(user_id, f"{prompt}")
+      memory.change_system_message(user_id, f"{prompt_instance.get_FAQ_prompt()}")
 
       # TODO: this nest if-else should be simplified
       if relevant_answer:
@@ -227,8 +226,7 @@ def handle_text_message(event):
 #         memory.append(user_id, 'assistant', relevant_answer)
 #         response = relevant_answer
 
-          prompt = prompt.get_noanswer_prompt()
-          memory.change_system_message(user_id, f"{prompt}")
+          memory.change_system_message(user_id, f"{prompt_instance.get_noanswer_prompt()}")
 
 
           user_model = model_management[user_id]
