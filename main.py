@@ -116,8 +116,8 @@ def handle_text_message(event):
   )  #Adjust code here. Suggested by Jasper on 10/8/23
   #text = prompt + text
   logger.info(f'{user_id}: {text}')
-  noanswer_prompt = prompt_instance.get_noanswer_prompt()
-  FAQ_prompt = prompt_instance.get_FAQ_prompt()
+  # noanswer_prompt = prompt_instance.get_noanswer_prompt()
+  # FAQ_prompt = prompt_instance.get_FAQ_prompt()
 
   ###
 #  system_prompt = (
